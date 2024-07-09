@@ -13,11 +13,10 @@ class ToDoList {
     }
 
     deleteTask(index) {
-        this.tasks.splice(index,1);
+        this.tasks.splice(index, 1);
         this.saveTasksToLocalStorage();
         this.renderTasks();
     }
-
 
     updateTask(index, value) {
         this.tasks[index].name = value;
@@ -35,24 +34,27 @@ class ToDoList {
         this.renderTasks();
     }
 
-
     renderTasks() {
         const taskList = document.querySelector('#list-item');
-        const taskEl = document.createElement('li');
-        taskEl.classList.add('item');
-
+        taskList.innerHTML = '';
         this.tasks.forEach((task, index) => {
+
+            const taskEl = document.createElement('li');
+            taskEl.classList.add('item');
+
             taskEl.innerHTML = `
-             <span>${task.name}</span>
+             <input class="task-input"  data-id="${index}" type="text" value="${task.name}"/>
              <div class="toDoList-actions">
-                  <button class="updateTask" onClick="updateTask(${index}, ${task.name})">Update a Task</button>
-                  <button class="deleteTask" onClick="deleteTask(${index})">Delete a Task</button> 
+                  <button class="updateTask" onClick="todoList.updateTask(${index}, getValue('${index}'))">Update a Task</button>
+                  <button class="deleteTask" onClick="todoList.deleteTask(${index})">Delete a Task</button> 
             </div>
           `
+            taskList.appendChild(taskEl);
         })
-        taskList.appendChild(taskEl);
+
     }
 }
+
 const todoList = new ToDoList();
 
 function addTask() {
@@ -62,6 +64,11 @@ function addTask() {
         todoList.addTask(taskVal);
         taskInput.value = '';
     }
+}
+
+function getValue(index) {
+    const taskValue = document.querySelector(`.task-input[data-id="${index}"]`).value;
+    return taskValue;
 }
 
 document.getElementById('addButton').addEventListener('click', addTask);
